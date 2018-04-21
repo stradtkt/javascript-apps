@@ -54,7 +54,10 @@ const UICtrl = (function() {
     addBtn: '.add-btn',
     itemNameInput: '#item-name',
     itemCaloriesInput: '#item-calories',
-    totalCalories: '.total-calories'
+    totalCalories: '.total-calories',
+    updateBtn: '.update-btn',
+    deleteBtn: '.delete-btn',
+    backBtn: '.back-btn'
   }
 
   return {
@@ -101,6 +104,13 @@ const UICtrl = (function() {
     showTotalCalories: function(totalCalories) {
       document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
     },
+    clearEditState: function() {
+      UICtrl.clearInput();
+      document.querySelector(UISelectors.updateBtn).style.display = 'none';
+      document.querySelector(UISelectors.deleteBtn).style.display = 'none';
+      document.querySelector(UISelectors.backBtn).style.display = 'none';
+      document.querySelector(UISelectors.addBtn).style.display = 'inline';
+    },
     getTotalCalories: function() {
       let total = 0;
       //loop through items and add calories
@@ -122,6 +132,9 @@ const App = (function(ItemCtrl, UICtrl) {
   const loadEventListeners = function() {
     const UISelectors = UICtrl.getSelectors();
     document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+
+    //edit icon click event
+    document.querySelector(UISelectors.itemList).addEventListener('click', itemUpdateSubmit);
   }
 
   const itemAddSubmit = function(e) {
@@ -141,8 +154,18 @@ const App = (function(ItemCtrl, UICtrl) {
     e.preventDefault();
   }
 
+  const itemUpdateSubmit = function(e) {
+    if(e.target.classList.contains('edit-item')) {
+      //get list item id (item-0, item-1)
+      const listId = e.target.parentNode.parentNode;
+    }
+    e.preventDefault();
+  }
+
   return {
     init: function() {
+      //clear edit state/set initial state
+      UICtrl.clearEditState();
       console.log('initializing app');
       const items = ItemCtrl.getItems();
 
